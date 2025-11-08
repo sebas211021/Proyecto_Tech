@@ -1,3 +1,11 @@
+const itemsPorPagina = 2;
+
+const estado = {
+  hamburguesas: 1,
+  perrosCalientes: 1,
+  arepas: 1
+};
+
 async function obtenerProductos() {
   try {
     const respuesta = await fetch("./productos.json");
@@ -11,25 +19,66 @@ async function obtenerProductos() {
 }
 
 function mostrarProductos(productos) {
-  const contenedorHamburguesas = document.querySelector("#pills-home .row");
-  const contenedorPerros = document.querySelector("#pills-profile .row");
-  const contenedorArepas = document.querySelector("#pills-contact .row");
+  renderConPaginacion("hamburguesas", productos.hamburguesas);
+  renderConPaginacion("perrosCalientes", productos.perrosCalientes);
+  renderConPaginacion("arepas", productos.arepas);
+}
 
-  contenedorHamburguesas.innerHTML = "";
-  contenedorPerros.innerHTML = "";
-  contenedorArepas.innerHTML = "";
+function renderConPaginacion(tipo, lista) {
+  const pagina = estado[tipo];
+  const inicio = (pagina - 1) * itemsPorPagina;
+  const fin = inicio + itemsPorPagina;
+  const productosPagina = lista.slice(inicio, fin);
 
-  productos.hamburguesas.forEach(h => {
-    contenedorHamburguesas.innerHTML += crearCard(h);
+  const contenedor = document.querySelector(
+    `#pills-${tipo === "hamburguesas" ? "home" : tipo === "perrosCalientes" ? "profile" : "contact"} .row`
+  );
+  const contenedorPadre = contenedor.parentElement;
+
+  contenedor.innerHTML = "";
+  productosPagina.forEach(producto => {
+    contenedor.innerHTML += crearCard(producto);
   });
 
-  productos.perrosCalientes.forEach(p => {
-    contenedorPerros.innerHTML += crearCard(p);
-  });
+  const paginacionAnterior = contenedorPadre.querySelector(".paginacion-wrapper");
+  if (paginacionAnterior) {
+    paginacionAnterior.remove();
+  }
 
-  productos.arepas.forEach(a => {
-    contenedorArepas.innerHTML += crearCard(a);
-  });
+  renderPaginacion(tipo, lista.length, contenedorPadre);
+}
+
+function renderPaginacion(tipo, totalItems, contenedorPadre) {
+  const totalPaginas = Math.ceil(totalItems / itemsPorPagina);
+  if (totalPaginas <= 1) return; // Ocultar paginación si hay solo 1 página
+
+  const paginacionWrapper = document.createElement("div");
+  paginacionWrapper.className = "row w-100 paginacion-wrapper";
+
+  const paginacion = document.createElement("ul");
+  paginacion.className = "pagination justify-content-center mt-3";
+
+  for (let i = 1; i <= totalPaginas; i++) {
+    const li = document.createElement("li");
+    li.className = `page-item ${i === estado[tipo] ? "active" : ""}`;
+
+    const a = document.createElement("a");
+    a.className = "page-link custom-paginacion";
+    a.href = "#";
+    a.textContent = i;
+    a.onclick = () => cambiarPagina(tipo, i);
+
+    li.appendChild(a);
+    paginacion.appendChild(li);
+  }
+
+  paginacionWrapper.appendChild(paginacion);
+  contenedorPadre.appendChild(paginacionWrapper);
+}
+
+function cambiarPagina(tipo, pagina) {
+  estado[tipo] = pagina;
+  obtenerProductos();
 }
 
 function crearCard(producto) {

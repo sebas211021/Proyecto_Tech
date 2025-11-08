@@ -7,7 +7,6 @@ main{
     min-height: 100vh;
 }
 
-
 .imagen_fija{
     width: 100%;
     height: 350px;          
@@ -65,20 +64,8 @@ main{
     padding: 6px 12px;
 }
 
-.navbar-nav .nav-link {
-    color: #ffffff !important;        
-    transition: color 0.3s ease;
-    margin: 0 20px;
-    font-size: 1.3rem;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #ffc107 !important;          
-}
-
 .botonMenu {
   background-color: #ffc107;
-  color: #000000 !important;             
   color: #212529;                     
   border-radius: 8px;
   padding: 0.6rem 1.2rem;
@@ -107,4 +94,23 @@ main{
 
 .social-icons a:hover {
   color: #e0a800;          
+}
+
+.page-link.custom-paginacion {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+  transition: all 0.3s ease;
+}
+
+.page-link.custom-paginacion:hover {
+  background-color: #ffc107;
+  color: #000;
+  border-color: #ffc107;
+}
+
+.page-item.active .page-link.custom-paginacion {
+  background-color: #ffc107;
+  color: #000;
+  border-color: #ffc107;
 }
